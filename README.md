@@ -1,4 +1,4 @@
-# BlazorWASMSIMDDetectExample
+# Blazor WASM SIMD Detect Example
 
 If you have done a lot of testing with Blazor WASM you may eventually hit some compatibility issues you weren't expecting. This project demonstrates a way of detecting SIMD support and using it if it is available.
 
