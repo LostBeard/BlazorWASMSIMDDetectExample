@@ -1,6 +1,6 @@
 # Blazor WASM SIMD Detect Example
 
-If you have done a lot of testing with Blazor WASM you may eventually hit some compatibility issues you weren't expecting. This project demonstrates a way of detecting SIMD support and using it if available.
+If you have done a lot of testing with Blazor WASM you may eventually hit some compatibility issues you weren't expecting. This .Net 8 Blazor WASM project demonstrates a way of detecting SIMD support and using it if available.
 
 # SIMD
 [Single Instruction, Multiple Data](https://v8.dev/features/simd) support has been added to Blazor WASM and is now enabled by default. and for good reason. Enabling SIMD brings some large speed improvements in many areas of Blazor WASM. There are many articles that praise the benefits of SIMD. While the linked articles below do not specifically mention Blazor, they all talk about the benefits SIMD can bring to C#.
