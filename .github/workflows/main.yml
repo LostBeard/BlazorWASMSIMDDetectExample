@@ -26,10 +26,6 @@ jobs:
     # publishes Blazor project to the publish-folder
     - name: Publish .NET Core Project via publish.sh bash script
       run: bash publish.sh
-
-    # changes the base-tag in index.html from '/' to '/[REPO_NAME]/'
-    - name: Change base-tag in index.html from / to /BlazorWASMSIMDDetectExample/
-      run: sed -i 's/<base href="\/"/<base href="\/BlazorWASMSIMDDetectExample\/"/g' bin/Publish/wwwroot/index.html
     
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: copy index.html to 404.html
