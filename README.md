@@ -25,12 +25,12 @@ I also have an updated test phone running Android 9 "Pie" with the latest Firefo
 So it is obvious that SIMD support is a bit fractured.
 
 Here are 2 options to handle SIMD compatibility issues.
-## Option 1  - Disable SIMD support
+## Option 1 - Disable SIMD support
 This is the simplest option and only requires adding the flag ```<WasmEnableSIMD>false</WasmEnableSIMD>``` to your project's .csproj file inside a ```<PropertyGroup>```.  This is the easiest and most compatible way to get around a lack of SIMD support but you lose the ability to take advantage if it is supported.
 
 I also recommend disabling ```BlazorWebAssemblyJiterpreter``` in your compatibility build. Testing on systems that did not support SIMD with SIMD disabled builds would get an exception ```MONO_WASM: get_Cache:0 code generation failed: CompileError: at offset 161: bad type U ...``` and also the message ```MONO_WASM: Disabling jiterpreter after 2 failures```. Setting ```<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>``` fixes it.
 
-## Option 2  - Detect SIMD support and load a supported build (method project demos)
+## Option 2 - Detect SIMD support and load a supported build (method this project demos)
 - Modify your index.html to detect SIMD support and load a compatibility build if needed. 
 - Create a compatibility build with SIMD and BlazorWebAssemblyJiterpreter disabled.
 
