@@ -2,6 +2,24 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Hello, SIMD!</h1>
 
-Welcome to your new app.
+<p>SIMD Supported: @SIMDSupported</p>
+
+<p>This Blazor WASM PWA app will use a SIMD enabled build when SIMD is supported and a SIMD disabled build when it is not.</p>
+
+<p>More information at the GitHub repo: <a href="https://github.com/LostBeard/BlazorWASMSIMDDetectExample">BlazorWASMSIMDDetectExample</a></p>
+
+
+@code {
+    [Inject]
+    IJSRuntime jsRuntime { get; set; }
+
+    bool SIMDSupported = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SIMDSupported = await jsRuntime.InvokeAsync<bool>("wasmFeatureDetect.simd");
+        await base.OnInitializedAsync();
+    }
+}
