@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlazorWASMSIMDDetectExample</title>
+    <base href="/BlazorWASMSIMDDetectExample/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="BlazorWASMSIMDDetectExample.styles.css" rel="stylesheet" />
+    <link href="manifest.webmanifest" rel="manifest" />
+    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
+</head>
+
+<body>
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <!-- autostart is set to false so we can detect SIMD support and load the appropriate build -->
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <!--
+        WASM Feature Detect - from GoogleChromeLabs
+        CDN UMD Version: https://unpkg.com/wasm-feature-detect/dist/umd/index.js
+        Repo: https://github.com/GoogleChromeLabs/wasm-feature-detect
+    -->
+    <script webworker-enabled src="wasm-feature-detect.1.5.1.js"></script>
+    <!--
+        The below script tag is used to detect SIMD support on the running device and load the appropriate build
+        If SIMD is not supported it loads _frameworkCompat/ instead of _framework/
+    -->
+    <script webworker-enabled>
+        (async () => {
+            var url = new URL(location.href);
+            var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
+            let verboseStart = url.searchParams.get('verboseStart') === '1';
+            var supportsSimd = await wasmFeatureDetect.simd();
+            if (verboseStart) console.log('supportsSimd', supportsSimd);
+            // compat mode build could be built without wasm exception support if needed and detected here
+            var supportsExceptions = await wasmFeatureDetect.exceptions();
+            if (verboseStart) console.log('supportsExceptions', supportsExceptions);
+            var useCompatMode = !supportsSimd;
+            if (forceCompatMode) {
+                if (verboseStart) console.log('forceCompatMode', forceCompatMode);
+                useCompatMode = true;
+            }
+            if (verboseStart) console.log('useCompatMode', useCompatMode);
+            Blazor.start({
+                loadBootResource: function (type, name, defaultUri, integrity) {
+                    if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
+                    if (useCompatMode && defaultUri.includes('_framework/')) {
+                        let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
+                        if (verboseStart) console.log('Using compat version:', newUrl);
+                        return newUrl;
+                    }
+                }
+            });
+        })();
+    </script>
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+
+</html>
