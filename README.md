@@ -178,7 +178,7 @@ Example modified service-worker.published.js
 })()
 ```
 
-Also, one more command is needed in the publish.bat file to copy over the compat builds service-worker-assets.js file.
+Also, one more command is needed in the publish.bat file to copy over the compatibility build's service-worker-assets.js file.
 
 Updated publish.bat  
 ```batch
