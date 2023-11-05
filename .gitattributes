@@ -61,9 +61,3 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
-
-*.cs    linguist-detectable=true  
-*.html  linguist-detectable=false
-*.css   linguist-detectable=false
-*.bat    linguist-detectable=false
-*.sh    linguist-detectable=false
