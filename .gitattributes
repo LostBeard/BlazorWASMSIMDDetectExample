@@ -63,3 +63,5 @@
 #*.RTF   diff=astextplain
 
 *.html linguist-detectable=false
+*.css linguist-detectable=false
+*.js linguist-detectable=false
