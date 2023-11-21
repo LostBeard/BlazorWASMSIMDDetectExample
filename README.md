@@ -1,5 +1,12 @@
 # Blazor WASM SIMD Detect Example
 
+ Blazor Web App SIMD Detect Example
+ [BlazorWebAppSIMDDetectExample](https://github.com/LostBeard/BlazorWebAppSIMDDetectExample)
+
+ Blazor WebAssembly Standalone SIMD Detect Example (this repo)
+ [BlazorWASMSIMDDetectExample](https://github.com/LostBeard/BlazorWASMSIMDDetectExample)
+
+
 [Live Demo](https://lostbeard.github.io/BlazorWASMSIMDDetectExample/)
 
 If you have done a lot of testing with Blazor WASM you may eventually hit some compatibility issues you weren't expecting. This .Net 8 Blazor WASM project demonstrates a way of detecting SIMD support and using it if available.

@@ -60,11 +60,10 @@
             Blazor.start({
                 loadBootResource: function (type, name, defaultUri, integrity) {
                     if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
-                    if (useCompatMode && defaultUri.includes('_framework/')) {
-                        let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
-                        if (verboseStart) console.log('Using compat version:', newUrl);
-                        return newUrl;
-                    }
+                    let useCompatThisResource = useCompatMode; // && type !== 'globalization';  // Blazor United runtime does not allow loading globalization from compat folder (fine for Blazor WASM Standalone)
+                    let newUrl = useCompatThisResource ? defaultUri.replace('_framework/', '_frameworkCompat/') : defaultUri.replace('_frameworkCompat/', '_framework/');
+                    if (verboseStart) console.log('Using framework resource:', newUrl);
+                    return newUrl;
                 }
             });
         })();

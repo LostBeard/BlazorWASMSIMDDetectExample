@@ -13,7 +13,7 @@
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "BlazorWASMSIMDDetectExample",
+      "launchUrl": "BlazorWASMSIMDDetectExample/",
       "commandLineArgs": "--pathbase=/BlazorWASMSIMDDetectExample",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
