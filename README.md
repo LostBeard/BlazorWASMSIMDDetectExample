@@ -1,11 +1,10 @@
 # Blazor WASM SIMD Detect Example
 
- Blazor Web App SIMD Detect Example  
- [BlazorWebAppSIMDDetectExample](https://github.com/LostBeard/BlazorWebAppSIMDDetectExample)
+Blazor Web App SIMD Detect Example  
+[BlazorWebAppSIMDDetectExample](https://github.com/LostBeard/BlazorWebAppSIMDDetectExample)
 
- Blazor WebAssembly Standalone SIMD Detect Example (this repo)  
- [BlazorWASMSIMDDetectExample](https://github.com/LostBeard/BlazorWASMSIMDDetectExample)
-
+Blazor WebAssembly Standalone SIMD Detect Example (this repo)  
+[BlazorWASMSIMDDetectExample](https://github.com/LostBeard/BlazorWASMSIMDDetectExample)
 
 [Live Demo](https://lostbeard.github.io/BlazorWASMSIMDDetectExample/)
 
