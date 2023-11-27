@@ -49,6 +49,7 @@ index.html if a Blazor WebAssembly Standalone app or App.razor in the server pro
 The code below will detect SIMD support and use the appropriate build folder.
 ```html
 <!-- autostart is set to false so we can detect SIMD support and load the appropriate build -->
+<!-- the below script can also be "_framework/blazor.web.js" depending on the hosting model -->
 <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 <!--
     WASM Feature Detect - from GoogleChromeLabs
@@ -102,11 +103,6 @@ The code below will detect SIMD support and use the appropriate build folder.
             } else if (runtimeType === 'united') {
                 // Blazor Web App (formally Blazor United)
                 Blazor.start({ webAssembly: webAssemblyConfig });
-            } else {
-                // Fallback supports both known Blazor WASM runtimes
-                // Modified loader that will work with both United and WASM runtimes (doesn't require detection)
-                webAssemblyConfig.webAssembly = webAssemblyConfig;
-                Blazor.start(webAssemblyConfig);
             }
         })();
 </script>
