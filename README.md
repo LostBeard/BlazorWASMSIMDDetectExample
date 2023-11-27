@@ -124,11 +124,10 @@ app.UseStaticFiles(new StaticFileOptions
 
 Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used during publish)
 ```xml
-	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
-		<WasmEnableSIMD>false</WasmEnableSIMD>
-		<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
-	</PropertyGroup>
-
+<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
+	<WasmEnableSIMD>false</WasmEnableSIMD>
+	<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+</PropertyGroup>
 ```
 
 Example publish.bat to build first with SIMD support, and then without SIMD support for compatibility. This batch script is located in the project folder.
