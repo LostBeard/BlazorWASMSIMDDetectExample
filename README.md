@@ -237,7 +237,7 @@ Updated publish.bat
 REM Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 RC 2 defaults)
 dotnet publish --nologo --configuration Release --output "bin\Publish"
 
-REM Compatibility build with SIMD and BlazorWebAssemblyJiterpreter disabled
+REM ReleaseCompat build with SIMD and BlazorWebAssemblyJiterpreter disabled
 dotnet publish --nologo --no-restore --configuration ReleaseCompat --output "bin\PublishCompat"
 
 REM Combine builds
