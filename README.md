@@ -42,10 +42,11 @@ I also recommend disabling ```BlazorWebAssemblyJiterpreter``` in your compatibil
 - Modify your index.html to detect SIMD support and load a compatibility build if needed. 
 - Create a compatibility build with SIMD and BlazorWebAssemblyJiterpreter disabled.
 
-### HTML - index.html or App.razor
+### HTML file and Blazor startup
+Modify the Blazor startup in the main html file. Depending on the template you used it could be
+index.html if a Blazor WebAssembly Standalone app or App.razor in the server project if a Blazor Web App.
 
 The code below will detect SIMD support and use the appropriate build folder.
-In the project index,html  
 ```html
 <!-- autostart is set to false so we can detect SIMD support and load the appropriate build -->
 <script src="_framework/blazor.webassembly.js" autostart="false"></script>
