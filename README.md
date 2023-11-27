@@ -114,7 +114,7 @@ In the project index,html
 ### ASP.Net Core Hosted
 If using ASP.Net Core hosted Blazor WASM, the server needs to be told to serve the ```.dat``` file type or some files will not be served from _frameworkCompat resulting in ```File not found``` errors in the browser.
 
-In the Server Program.cs file modify the ```app.UseStaticFiles``` call to allow serving .dat files.
+In the server project Program.cs file modify the ```app.UseStaticFiles``` call to allow serving .dat files.
 ```cs
 // Enable the .dat file extension (required to serve icudt.dat from _frameworkCompat/
 var provider = new FileExtensionContentTypeProvider();
