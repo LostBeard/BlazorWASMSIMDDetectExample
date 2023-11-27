@@ -42,6 +42,8 @@ I also recommend disabling ```BlazorWebAssemblyJiterpreter``` in your compatibil
 - Modify your index.html to detect SIMD support and load a compatibility build if needed. 
 - Create a compatibility build with SIMD and BlazorWebAssemblyJiterpreter disabled.
 
+### HTML - index.html or App.razor
+
 The code below will detect SIMD support and use the appropriate build folder.
 In the project index,html  
 ```html
@@ -109,6 +111,7 @@ In the project index,html
 </script>
 ```
 
+### ASP.Net Core Hosted
 If using ASP.Net Core hosted Blazor WASM, the server needs to be told to serve the ```.dat``` file type or some files will not be served from _frameworkCompat resulting in ```File not found``` errors in the browser.
 
 In the Server Program.cs file modify the ```app.UseStaticFiles``` call to allow serving .dat files.
@@ -122,6 +125,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 ```
 
+### Blazor WASM Project Configuration
 Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used during publish)
 ```xml
 <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
@@ -129,6 +133,8 @@ Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used durin
 	<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
 </PropertyGroup>
 ```
+
+### Publish
 
 Example publish.bat to build first with SIMD support, and then without SIMD support for compatibility. This batch script is located in the project folder.
 (If using ASP.Net Core hosted Blazor WASM this file would be in the Server's project folder)
