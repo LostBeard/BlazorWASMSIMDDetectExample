@@ -59,42 +59,86 @@ In the project index,html
 -->
 <script webworker-enabled>
     (async () => {
-        var url = new URL(location.href);
-        var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
-        let verboseStart = url.searchParams.get('verboseStart') === '1';
-        var supportsSimd = await wasmFeatureDetect.simd();
-        if (verboseStart) console.log('supportsSimd', supportsSimd);
-        // compat mode build could be built without wasm exception support if needed and detected here
-        var supportsExceptions = await wasmFeatureDetect.exceptions();
-        if (verboseStart) console.log('supportsExceptions', supportsExceptions);
-        var useCompatMode = !supportsSimd;
-        if (forceCompatMode) {
-            if (verboseStart) console.log('forceCompatMode', forceCompatMode);
-            useCompatMode = true;
-        }
-        if (verboseStart) console.log('useCompatMode', useCompatMode);
-        Blazor.start({
-            loadBootResource: function (type, name, defaultUri, integrity) {
-                if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
-                if (useCompatMode && defaultUri.includes('_framework/')) {
-                    let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
-                    if (verboseStart) console.log('Using compat version:', newUrl);
-                    return newUrl;
-                }
+            var url = new URL(location.href);
+            let verboseStart = url.searchParams.get('verboseStart') === '1';
+            var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
+            var supportsSimd = await wasmFeatureDetect.simd();
+            if (verboseStart) console.log('supportsSimd', supportsSimd);
+            // compat mode build could be built without wasm exception support if needed and detected here
+            var supportsExceptions = await wasmFeatureDetect.exceptions();
+            if (verboseStart) console.log('supportsExceptions', supportsExceptions);
+            var useCompatMode = !supportsSimd;
+            if (forceCompatMode) {
+                if (verboseStart) console.log('forceCompatMode', forceCompatMode);
+                useCompatMode = true;
             }
-        });
-    })();
+            if (verboseStart) console.log('useCompatMode', useCompatMode);
+            // Blazor United (.Net 8 Blazor Web App) Blazor.start settings are slightly different than Blazor WebAssembly (Blazor WebAssembly Standalone App)
+            var getRuntimeType = function () {
+                for (var script of document.scripts) {
+                    if (script.src.indexOf('_framework/blazor.web.js') !== -1) return 'united';
+                    if (script.src.indexOf('_framework/blazor.webassembly.js') !== -1) return 'wasm';
+                }
+                return '';
+            }
+            var runtimeType = getRuntimeType();
+            // customize the resource loader for the runtime that is loaded
+            // https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/startup?view=aspnetcore-8.0#load-boot-resources
+            var webAssemblyConfig = {
+                loadBootResource: function (type, name, defaultUri, integrity) {
+                    if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
+                    if (useCompatMode) {
+                        let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
+                        return newUrl;
+                    }
+                },
+            };
+            if (runtimeType === 'wasm') {
+                // Blazor WebAssembly Standalone App
+                Blazor.start(webAssemblyConfig);
+            } else if (runtimeType === 'united') {
+                // Blazor Web App (formally Blazor United)
+                Blazor.start({ webAssembly: webAssemblyConfig });
+            } else {
+                // Fallback supports both known Blazor WASM runtimes
+                // Modified loader that will work with both United and WASM runtimes (doesn't require detection)
+                webAssemblyConfig.webAssembly = webAssemblyConfig;
+                Blazor.start(webAssemblyConfig);
+            }
+        })();
 </script>
 ```
 
-Example publish.bat to build first with SIMD support, and then without SIMD support for compatibility. This batch script is located in the project folder.
+If using ASP.Net Core hosted Blazor WASM, the server needs to be told to serve the ```.dat``` file type or some files will not be served from _frameworkCompat resulting in ```File not found``` errors in the browser.
 
+If the Server Program.cs file modify the ```app.UseStaticFiles``` call to allow serving .dat files.
+```cs
+// Enable the .dat file extension (required to serve icudt.dat from _frameworkCompat/
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".dat"] = "application/octet-stream";
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
+```
+
+Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used during publish)
+```xml
+	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
+		<WasmEnableSIMD>false</WasmEnableSIMD>
+		<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+	</PropertyGroup>
+
+```
+
+Example publish.bat to build first with SIMD support, and then without SIMD support for compatibility. This batch script is located in the project folder.
+(If using ASP.Net Core hosted Blazor WASM this file would be in the Server's project folder)
 ```batch
 REM Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 RC 2 defaults)
 dotnet publish --nologo --configuration Release --output "bin\Publish"
 
-REM Compatibility build with SIMD and BlazorWebAssemblyJiterpreter disabled
-dotnet publish --nologo --no-restore --configuration Release -p:WasmEnableSIMD=false -p:BlazorWebAssemblyJiterpreter=false --output "bin\PublishCompat"
+REM ReleaseCompat build with SIMD and BlazorWebAssemblyJiterpreter disabled
+dotnet publish --nologo --no-restore --configuration ReleaseCompat --output "bin\PublishCompat"
 
 REM Combine builds
 REM Copy the 'wwwroot\_framework' folder contents from the 2nd build to 'wwwroot\_frameworkCompat' in the 1st build

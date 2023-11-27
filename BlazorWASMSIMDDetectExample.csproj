@@ -8,6 +8,11 @@
 		<CompressionEnabled>false</CompressionEnabled>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
+		<WasmEnableSIMD>false</WasmEnableSIMD>
+		<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0-rc.2.23480.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0-rc.2.23480.2" PrivateAssets="all" />
