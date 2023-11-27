@@ -47,6 +47,7 @@ Modify the Blazor startup in the main html file. Depending on the template you u
 index.html if a Blazor WebAssembly Standalone app or App.razor in the server project if a Blazor Web App.
 
 The code below will detect SIMD support and use the appropriate build folder.
+Modify the html file.
 ```html
 <!-- autostart is set to false so we can detect SIMD support and load the appropriate build -->
 <!-- the below script can also be "_framework/blazor.web.js" depending on the hosting model -->
