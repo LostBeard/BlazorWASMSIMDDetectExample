@@ -1,3 +1,5 @@
+
+
 echo "Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 RC 2 defaults)"
 dotnet publish --nologo --configuration Release --output "bin\Publish"
 
