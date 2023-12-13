@@ -44,8 +44,8 @@
     <script webworker-enabled>
         (async () => {
             var url = new URL(location.href);
-            var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
             let verboseStart = url.searchParams.get('verboseStart') === '1';
+            var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
             var supportsSimd = await wasmFeatureDetect.simd();
             if (verboseStart) console.log('supportsSimd', supportsSimd);
             // compat mode build could be built without wasm exception support if needed and detected here
@@ -57,16 +57,38 @@
                 useCompatMode = true;
             }
             if (verboseStart) console.log('useCompatMode', useCompatMode);
-            Blazor.start({
+            // Blazor United (.Net 8 Blazor Web App) Blazor.start settings are slightly different than Blazor WebAssembly (Blazor WebAssembly Standalone App)
+            var getRuntimeType = function () {
+                for (var script of document.scripts) {
+                    if (script.src.indexOf('_framework/blazor.web.js') !== -1) return 'united';
+                    if (script.src.indexOf('_framework/blazor.webassembly.js') !== -1) return 'wasm';
+                }
+                return '';
+            }
+            var runtimeType = getRuntimeType();
+            // customize the resource loader for the runtime that is loaded
+            // https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/startup?view=aspnetcore-8.0#load-boot-resources
+            var webAssemblyConfig = {
                 loadBootResource: function (type, name, defaultUri, integrity) {
                     if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
-                    if (useCompatMode && defaultUri.includes('_framework/')) {
+                    if (useCompatMode) {
                         let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
-                        if (verboseStart) console.log('Using compat version:', newUrl);
                         return newUrl;
                     }
-                }
-            });
+                },
+            };
+            if (runtimeType === 'wasm') {
+                // Blazor WebAssembly Standalone App
+                Blazor.start(webAssemblyConfig);
+            } else if (runtimeType === 'united') {
+                // Blazor Web App (formally Blazor United)
+                Blazor.start({ webAssembly: webAssemblyConfig });
+            } else {
+                // Fallback supports both known Blazor WASM runtimes
+                // Modified loader that will work with both United and WASM runtimes (doesn't require detection)
+                webAssemblyConfig.webAssembly = webAssemblyConfig;
+                Blazor.start(webAssemblyConfig);
+            }
         })();
     </script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
