@@ -70,4 +70,4 @@
         return cachedResponse || fetch(event.request);
     }
 
-})()/* Manifest version: F7guyRJE */
+})()/* Manifest version: AYGwUX1N */
