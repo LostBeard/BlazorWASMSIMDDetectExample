@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 RC 2 defaults)"
+echo "Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 defaults)"
 dotnet publish --nologo --configuration Release --output "bin/Publish"
 
 echo "ReleaseCompat build with SIMD and BlazorWebAssemblyJiterpreter disabled"
