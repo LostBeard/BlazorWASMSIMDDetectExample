@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo "Normal build with SIMD and BlazorWebAssemblyJiterpreter enabled (.Net 8 defaults)"
-dotnet publish --nologo --configuration Release --output "bin/Publish"
+dotnet publish --nologo BlazorWASMSIMDDetectExample.csproj --configuration Release --output "bin/Publish"
 
 echo "ReleaseCompat build with SIMD and BlazorWebAssemblyJiterpreter disabled"
-dotnet publish --nologo --no-restore --configuration ReleaseCompat --output "bin/PublishCompat"
+dotnet publish --nologo --no-restore BlazorWASMSIMDDetectExample.csproj --configuration ReleaseCompat --output "bin/PublishCompat"
 
 echo "Combine builds"
 echo "Copy the 'wwwroot/_framework' folder contents from the 2nd build to 'wwwroot/_frameworkCompat' in the 1st build"
