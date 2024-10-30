@@ -66,8 +66,8 @@ Modify the html file like below.
 -->
 <script webworker-enabled>
     // Blazor WASM will fail to load if BigInt64Array or BigUint64Array is not found, but it does not use them on startup
-    globalThis.BigInt64Array ??= function () { };
-    globalThis.BigUint64Array ??= function () { };
+    if (!globalThis.BigInt64Array) globalThis.BigInt64Array = function () { };
+    if (!globalThis.BigUint64Array) globalThis.BigUint64Array = function () { };
 
     (async () => {
         var url = new URL(location.href);

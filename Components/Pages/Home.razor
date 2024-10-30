@@ -14,7 +14,7 @@
 
 @code {
     [Inject]
-    IJSRuntime jsRuntime { get; set; }
+    IJSRuntime jsRuntime { get; set; } = default!;
 
     bool SIMDSupported = false;
     bool WASMExceptionHandlingSupported = false;

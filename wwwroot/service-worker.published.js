@@ -1,4 +1,7 @@
 
+if (!globalThis.BigInt64Array) globalThis.BigInt64Array = function () { };
+if (!globalThis.BigUint64Array) globalThis.BigUint64Array = function () { };
+
 // WASM feature detection requires an async call so the code is wrapped in an async function.
 (async function () {
     // Caution! Be sure you understand the caveats before publishing an application with
@@ -9,7 +12,8 @@
     // self.importScripts('./service-worker-assets.js');
     self.importScripts('./wasm-feature-detect.1.5.1.js');
     var supportsSimd = await wasmFeatureDetect.simd();
-    var useCompatMode = !supportsSimd;
+    var supportsExceptions = await wasmFeatureDetect.exceptions();
+    var useCompatMode = !supportsSimd || !supportsExceptions;
     var serviceWorkerAssetsFile = useCompatMode ? './service-worker-assets-compat.js' : './service-worker-assets.js';
     self.importScripts(serviceWorkerAssetsFile);
     if (useCompatMode) {
