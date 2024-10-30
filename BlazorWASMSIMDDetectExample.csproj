@@ -13,6 +13,7 @@
 	<PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
 		<WasmEnableSIMD>false</WasmEnableSIMD>
 		<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+		<WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
 	</PropertyGroup>
 
 	<ItemGroup>
