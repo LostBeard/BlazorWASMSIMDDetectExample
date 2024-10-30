@@ -25,19 +25,19 @@
       "url": "_framework\/icudt_no_CJK.dat"
     },
     {
-      "hash": "sha256-4AkQ8Zok8TiQMRi2koyeRQc5ZS66FR5VXSZW3xTU+e0=",
+      "hash": "sha256-Ew1QHg47P9kJqhEU6QEi1t2fTDzV1lPEKSrs8Jv3H8U=",
       "url": "_framework\/blazor.boot.json"
     },
     {
-      "hash": "sha256-HZFDnXWa0ZvzN+0JSAE4OV61lcR9ZCo5oHfS8qNz+HE=",
+      "hash": "sha256-2B4PLGmnDA3Xx0LHqlSob4YV5qWLTK\/LDtOZKR4CYNk=",
       "url": "_framework\/dotnet.native.8.0.10.jch649y69m.js"
     },
     {
-      "hash": "sha256-Ksh7O28mTkwR0BI3qY\/5VL2540tK2wl8tZW1w21BGG0=",
+      "hash": "sha256-ZurLfczxJy3gQNPoCbfknL38WhMwfA\/2HbclHfAwWsM=",
       "url": "_framework\/dotnet.native.wasm"
     },
     {
-      "hash": "sha256-W5r11z6QHXSSbQgcBeXt5GWu\/AgQ9cOAwHqWd4OKq6E=",
+      "hash": "sha256-Pvt4FJBs1vs8q6WMcZxGxhB4N9zi+9+ecKdVK3C5r5I=",
       "url": "_framework\/BlazorWASMSIMDDetectExample.wasm"
     },
     {
@@ -193,7 +193,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-pnoy64gPKRw\/kQ9xeV\/01\/0hcFsfyDPUYfR7iQeT4yY=",
+      "hash": "sha256-opnpmvArR6DAGlg86dx8XXJ15I72hlVn5yHP3wiu85c=",
       "url": "index.html"
     },
     {
@@ -209,5 +209,5 @@
       "url": "wasm-feature-detect.1.5.1.js"
     }
   ],
-  "version": "H6Tb19mX"
+  "version": "gdYsDC3b"
 };
