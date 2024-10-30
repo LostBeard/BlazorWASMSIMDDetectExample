@@ -14,11 +14,13 @@ If you have done a lot of testing with Blazor WASM you may eventually hit some c
 [Single Instruction, Multiple Data](https://v8.dev/features/simd) support has been added to Blazor WASM and is now enabled by default in .Net 8, and for good reason. Enabling SIMD brings some large speed improvements in many areas of Blazor WASM. There are many articles that praise the benefits of SIMD. While the linked articles below do not specifically mention Blazor, they all talk about the benefits SIMD can bring to C#.
 
 SIMD and C# articles:    
-[LINQ on steroids with SIMD](https://steven-giesel.com/blogPost/faf06188-bae9-484d-804d-a42d58d18cad)  
-[SIMD, a parallel processing at hardware level in C#](https://dev.to/mstbardia/simd-a-parallel-processing-at-hardware-level-in-c-42p4)  
-[LINQ Internals: Speed Optimizations](https://antao-almada.medium.com/linq-internals-speed-optimizations-1d99b53750bb)  
-[Optimizing string.Count all the way from LINQ to hardware accelerated vectorized instructions](https://sergiopedri.medium.com/optimizing-string-count-all-the-way-from-linq-to-hardware-accelerated-vectorized-instructions-186816010ad9)  
-[Faster Guid comparisons using Vectors (SIMD) in .NET](https://www.meziantou.net/faster-guid-comparisons-using-vectors-simd-in-dotnet.htm)
+- [Use SIMD-accelerated numeric types](https://learn.microsoft.com/en-us/dotnet/standard/simd)
+- [.Net 9 AVX10v1 Support](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-9/runtime#avx10v1-support)  
+- [LINQ on steroids with SIMD](https://steven-giesel.com/blogPost/faf06188-bae9-484d-804d-a42d58d18cad)  
+- [SIMD, a parallel processing at hardware level in C#](https://dev.to/mstbardia/simd-a-parallel-processing-at-hardware-level-in-c-42p4)  
+- [LINQ Internals: Speed Optimizations](https://antao-almada.medium.com/linq-internals-speed-optimizations-1d99b53750bb)  
+- [Optimizing string.Count all the way from LINQ to hardware accelerated vectorized instructions](https://sergiopedri.medium.com/optimizing-string-count-all-the-way-from-linq-to-hardware-accelerated-vectorized-instructions-186816010ad9)  
+- [Faster Guid comparisons using Vectors (SIMD) in .NET](https://www.meziantou.net/faster-guid-comparisons-using-vectors-simd-in-dotnet.htm)
 
 
 ## The problem - Inconsistent SIMD support
@@ -34,7 +36,7 @@ So it is obvious that SIMD support is a bit fractured.
 
 Here are 2 options to handle SIMD compatibility issues.
 ## Option 1 - Disable SIMD support
-This is the simplest option and only requires adding the flag ```<WasmEnableSIMD>false</WasmEnableSIMD>``` to your project's .csproj file inside a ```<PropertyGroup>```.  This is the easiest and most compatible way to get around a lack of SIMD support but you lose the ability to take advantage if it is supported.
+This is the simplest option and only requires adding the flag ```<WasmEnableSIMD>false</WasmEnableSIMD>``` to your project's .csproj file inside a ```<PropertyGroup>```.  This is the easiest and most compatible way to get around a lack of SIMD support but you lose the ability to take advantage if it is supported. `<WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>` is also recommended for compatibility builds.
 
 I also recommend disabling ```BlazorWebAssemblyJiterpreter``` in your compatibility build. Testing on systems that did not support SIMD with SIMD disabled builds would get an exception ```MONO_WASM: get_Cache:0 code generation failed: CompileError: at offset 161: bad type U ...``` and also the message ```MONO_WASM: Disabling jiterpreter after 2 failures```. Setting ```<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>``` fixes it.
 
@@ -63,49 +65,58 @@ Modify the html file like below.
     If SIMD is not supported it loads _frameworkCompat/ instead of _framework/ 
 -->
 <script webworker-enabled>
+    // Blazor WASM will fail to load if BigInt64Array or BigUint64Array is not found, but it does not use them on startup
+    globalThis.BigInt64Array ??= function () { };
+    globalThis.BigUint64Array ??= function () { };
+
     (async () => {
-            var url = new URL(location.href);
-            let verboseStart = url.searchParams.get('verboseStart') === '1';
-            var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
-            var supportsSimd = await wasmFeatureDetect.simd();
-            if (verboseStart) console.log('supportsSimd', supportsSimd);
-            // compat mode build could be built without wasm exception support if needed and detected here
-            var supportsExceptions = await wasmFeatureDetect.exceptions();
-            if (verboseStart) console.log('supportsExceptions', supportsExceptions);
-            var useCompatMode = !supportsSimd;
-            if (forceCompatMode) {
-                if (verboseStart) console.log('forceCompatMode', forceCompatMode);
-                useCompatMode = true;
+        var url = new URL(location.href);
+        let verboseStart = url.searchParams.get('verboseStart') === '1';
+        var forceCompatMode = url.searchParams.get('forceCompatMode') === '1';
+        var supportsSimd = await wasmFeatureDetect.simd();
+        if (verboseStart) console.log('supportsSimd', supportsSimd);
+        // compat mode build could be built without wasm exception support if needed and detected here
+        var supportsExceptions = await wasmFeatureDetect.exceptions();
+        if (verboseStart) console.log('supportsExceptions', supportsExceptions);
+        var useCompatMode = !supportsSimd || !supportsExceptions;
+        if (forceCompatMode) {
+            if (verboseStart) console.log('forceCompatMode', forceCompatMode);
+            useCompatMode = true;
+        }
+        if (verboseStart) console.log('useCompatMode', useCompatMode);
+        // Blazor United (.Net 8 Blazor Web App) Blazor.start settings are slightly different than Blazor WebAssembly (Blazor WebAssembly Standalone App)
+        var getRuntimeType = function () {
+            for (var script of document.scripts) {
+                if (script.src.indexOf('_framework/blazor.web.js') !== -1) return 'united';
+                if (script.src.indexOf('_framework/blazor.webassembly.js') !== -1) return 'wasm';
             }
-            if (verboseStart) console.log('useCompatMode', useCompatMode);
-            // Blazor United (.Net 8 Blazor Web App) Blazor.start settings are slightly different than Blazor WebAssembly (Blazor WebAssembly Standalone App)
-            var getRuntimeType = function () {
-                for (var script of document.scripts) {
-                    if (script.src.indexOf('_framework/blazor.web.js') !== -1) return 'united';
-                    if (script.src.indexOf('_framework/blazor.webassembly.js') !== -1) return 'wasm';
+            return '';
+        }
+        var runtimeType = getRuntimeType();
+        // customize the resource loader for the runtime that is loaded
+        // https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/startup?view=aspnetcore-8.0#load-boot-resources
+        var webAssemblyConfig = {
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
+                if (useCompatMode) {
+                    let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
+                    return newUrl;
                 }
-                return '';
-            }
-            var runtimeType = getRuntimeType();
-            // customize the resource loader for the runtime that is loaded
-            // https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/startup?view=aspnetcore-8.0#load-boot-resources
-            var webAssemblyConfig = {
-                loadBootResource: function (type, name, defaultUri, integrity) {
-                    if (verboseStart) console.log(`Loading: '${type}', '${name}', '${defaultUri}', '${integrity}'`);
-                    if (useCompatMode) {
-                        let newUrl = defaultUri.replace('_framework/', '_frameworkCompat/');
-                        return newUrl;
-                    }
-                },
-            };
-            if (runtimeType === 'wasm') {
-                // Blazor WebAssembly Standalone App
-                Blazor.start(webAssemblyConfig);
-            } else if (runtimeType === 'united') {
-                // Blazor Web App (formally Blazor United)
-                Blazor.start({ webAssembly: webAssemblyConfig });
-            }
-        })();
+            },
+        };
+        if (runtimeType === 'wasm') {
+            // Blazor WebAssembly Standalone App
+            Blazor.start(webAssemblyConfig);
+        } else if (runtimeType === 'united') {
+            // Blazor Web App (formally Blazor United)
+            Blazor.start({ webAssembly: webAssemblyConfig });
+        } else {
+            // Fallback supports both known Blazor WASM runtimes
+            // Modified loader that will work with both United and WASM runtimes (doesn't require detection)
+            webAssemblyConfig.webAssembly = webAssemblyConfig;
+            Blazor.start(webAssemblyConfig);
+        }
+    })();
 </script>
 ```
 
@@ -129,6 +140,7 @@ Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used durin
 <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
 	<WasmEnableSIMD>false</WasmEnableSIMD>
 	<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+    <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
 </PropertyGroup>
 ```
 
