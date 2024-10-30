@@ -42,6 +42,10 @@
         If SIMD is not supported it loads _frameworkCompat/ instead of _framework/
     -->
     <script webworker-enabled>
+        // Blazor WASM will fail to load if BigInt64Array or BigUint64Array is not found, but it does not use them on startup
+        globalThis.BigInt64Array ??= function () { };
+        globalThis.BigUint64Array ??= function () { };
+
         (async () => {
             var url = new URL(location.href);
             let verboseStart = url.searchParams.get('verboseStart') === '1';
@@ -51,7 +55,7 @@
             // compat mode build could be built without wasm exception support if needed and detected here
             var supportsExceptions = await wasmFeatureDetect.exceptions();
             if (verboseStart) console.log('supportsExceptions', supportsExceptions);
-            var useCompatMode = !supportsSimd;
+            var useCompatMode = !supportsSimd || !supportsExceptions;
             if (forceCompatMode) {
                 if (verboseStart) console.log('forceCompatMode', forceCompatMode);
                 useCompatMode = true;
