@@ -1,4 +1,3 @@
-/* Manifest version: 5jx6aJQr */
 
 // WASM feature detection requires an async call so the code is wrapped in an async function.
 (async function () {
@@ -71,4 +70,4 @@
         return cachedResponse || fetch(event.request);
     }
 
-})()
+})()/* Manifest version: D+b3YrNX */
