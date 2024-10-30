@@ -180,7 +180,8 @@ Example modified service-worker.published.js
     // self.importScripts('./service-worker-assets.js');
     self.importScripts('./wasm-feature-detect.1.5.1.js');
     var supportsSimd = await wasmFeatureDetect.simd();
-    var useCompatMode = !supportsSimd;
+    var supportsExceptions = await wasmFeatureDetect.exceptions();
+    var useCompatMode = !supportsSimd || !supportsExceptions;
     var serviceWorkerAssetsFile = useCompatMode ? './service-worker-assets-compat.js' : './service-worker-assets.js';
     self.importScripts(serviceWorkerAssetsFile);
     if (useCompatMode) {

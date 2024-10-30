@@ -5,6 +5,7 @@
 <h1>Hello, SIMD!</h1>
 
 <p>SIMD Supported: @SIMDSupported</p>
+<p>WASM Exception Handling Supported: @WASMExceptionHandlingSupported</p>
 
 <p>This Blazor WASM PWA app will use a SIMD enabled build when SIMD is supported and a SIMD disabled build when it is not.</p>
 
@@ -16,10 +17,12 @@
     IJSRuntime jsRuntime { get; set; }
 
     bool SIMDSupported = false;
+    bool WASMExceptionHandlingSupported = false;
 
     protected override async Task OnInitializedAsync()
     {
         SIMDSupported = await jsRuntime.InvokeAsync<bool>("wasmFeatureDetect.simd");
+        WASMExceptionHandlingSupported = await jsRuntime.InvokeAsync<bool>("wasmFeatureDetect.exceptions");
         await base.OnInitializedAsync();
     }
 }
