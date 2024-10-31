@@ -138,8 +138,8 @@ app.UseStaticFiles(new StaticFileOptions
 Add ReleaseCompat configuration rule to the Blazor WASM .csproj file (used during publish)
 ```xml
 <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseCompat' ">
-	<WasmEnableSIMD>false</WasmEnableSIMD>
-	<BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
+    <WasmEnableSIMD>false</WasmEnableSIMD>
+    <BlazorWebAssemblyJiterpreter>false</BlazorWebAssemblyJiterpreter>
     <WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
 </PropertyGroup>
 ```
