@@ -266,6 +266,8 @@ copy /Y "bin\PublishCompat\wwwroot\service-worker-assets.js" "bin\Publish\wwwroo
 ```
 
 ## Testing
-This project is tested with BrowserStack. Test results on various platforms will be listed here once a BrowserStack account has been acquired.
+This project is tested with BrowserStack. "[BrowserStack.com](https://www.browserstack.com/open-source) loves Open Source." It is a great resource for testing web apps and desktop apps on multiple platforms. Most open source projects, even popular ones, have zero or little funding. BrowserStack supports Open Source with free testing for open source projects.
+
+Test results on various platforms will be listed here once they have been tested.
 
 
